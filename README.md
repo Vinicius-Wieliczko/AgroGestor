@@ -8,11 +8,10 @@ Pequenos e médios produtores rurais enfrentam desafios estruturais relacionados
 
 O AgroGestor preenche essa lacuna oferecendo uma plataforma simples e acessível para a agricultura familiar, que representa mais de 70% dos estabelecimentos rurais no Brasil. O projeto atende a importantes eixos estruturantes, como Transformação Digital, Desenvolvimento Social e Regional, e Sustentabilidade Socioambiental. 
 
-Além disso, a ferramenta está alinhada a diversos Objetivos de Desenvolvimento Sustentável (ODS) da ONU, incluindo: Erradicação da pobreza (ODS 1), Fome zero e agricultura sustentável (ODS 2), Trabalho decente e crescimento econômico (ODS 8), e Indústria, inovação e infraestrutura (ODS 9).
 
 ## 🚀 Funcionalidades Principais (Objetivos Específicos)
 
-* **Registro e Organização de Dados:** Levantamento e estruturação de informações essenciais sobre produção, insumos, clima, custos e vendas para apoiar a tomada de decisões.
+* **Registro e Organização de Dados:** Levantamento e estruturação de informações essenciais sobre produção, insumos, clima e receita para apoiar a tomada de decisões.
 * **Controle de Insumos e Lotes:** Inserção e retirada de insumos agrícolas no estoque, com controle automatizado de validades para evitar perdas.
 * **Gestão de Plantações:** Registro de áreas plantadas, controle de datas de plantio e previsão de colheita.
 * **Módulo Financeiro:** Balanço dinâmico de receitas e despesas.
