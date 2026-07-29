@@ -48,6 +48,6 @@ A aplicação foi projetada com base nas demandas reais de produtores e técnico
    
 3. Inicie o servidor de desenvolvimento:
    ```bash
-   python app.py
+   py app.py
    
 Acesse a aplicação no navegador através do endereço: http://127.0.0.1:5000
