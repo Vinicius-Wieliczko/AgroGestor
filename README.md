@@ -40,14 +40,8 @@ A aplicação foi projetada com base nas demandas reais de produtores e técnico
 
 1. Clone o repositório:
    ```bash
-   git clone [https://github.com/Vinicius-Wieliczko/AgroGestor.git](https://github.com/Vinicius-Wieliczko/AgroGestor.git)
+   git clone https://github.com/Vinicius-Wieliczko/AgroGestor.git
+   pip install -r requirements.txt
+   python app.py
 
-2. Instale as dependências:
-  ```bash
-  pip install -r requirements.txt
-   
-3. Inicie o servidor de desenvolvimento:
-   ```bash
-   py app.py
-   
-Acesse a aplicação no navegador através do endereço: http://127.0.0.1:5000
+Acesse a aplicação no navegador através do endereço: [http://127.0.0.1:5000](http://127.0.0.1:5000)
