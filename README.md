@@ -44,10 +44,10 @@ A aplicação foi projetada com base nas demandas reais de produtores e técnico
 
 2. Instale as dependências:
   ```bash
-    pip install -r requirements.txt
+  pip install -r requirements.txt
    
 3. Inicie o servidor de desenvolvimento:
-  ```bash
-    python app.py
+   ```bash
+   python app.py
    
 Acesse a aplicação no navegador através do endereço: http://127.0.0.1:5000
