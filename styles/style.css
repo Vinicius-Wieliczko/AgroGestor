@@ -1,0 +1,395 @@
+/* Resets e Fontes */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #ffffff;
+    color: #333;
+    padding-bottom: 30px;
+}
+
+/* Autenticação (Login / Cadastro) */
+#auth-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f9f9f9;
+}
+
+.auth-box {
+    background-color: #e0e0e0;
+    padding: 30px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 80%;
+    max-width: 320px;
+    text-align: center;
+}
+
+.auth-box input, .auth-box select {
+    padding: 10px;
+    border-radius: 20px;
+    border: none;
+    text-align: center;
+}
+
+.btn-auth {
+    background-color: #006400;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.auth-link {
+    color: #0000ee;
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* Cabeçalho */
+.top-bar {
+    background-color: #006400; 
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.menu-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Cartões Gerais */
+.card {
+    border-radius: 15px;
+    margin: 15px;
+    padding: 15px;
+    text-align: center;
+}
+
+.card h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    font-weight: normal;
+}
+
+/* Clima */
+.weather-card {
+    background-color: #cce5ff; 
+}
+.weather-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+.current-weather .temp {
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 10px;
+}
+.forecast-24h {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding-bottom: 5px;
+    font-size: 11px;
+}
+.forecast-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 40px;
+}
+
+.legenda-clima {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 15px;
+    margin-top: 15px;
+    font-size: 0.75em; 
+    color: #555;
+    max-width: 100%;
+}
+
+.legenda-clima p {
+    margin: 0 0 8px 0;
+    font-size: 0.95em;
+    color: #333;
+}
+
+.legenda-clima ul {
+    list-style: none; 
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 12px; 
+}
+
+.legenda-clima li {
+    display: flex;
+    align-items: center;
+    gap: 4px; /* Espaço entre o emoji e o texto */
+    white-space: nowrap;
+}
+
+/* Finanças */
+.finance-card {
+    background-color: #aaffaa; 
+}
+.finance-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    font-size: 13px;
+}
+.btn-light {
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px;
+    margin-top: 5px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+/* Plantação (Marrom) */
+.btn-brown-wide {
+    background-color: #bcaaa4; 
+    color: #333;
+    width: calc(100% - 30px);
+    margin: 0 15px;
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.plantation-card {
+    background-color: #d7ccc8; 
+    margin-top: 10px;
+}
+.plantation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 5px;
+    font-size: 11px;
+}
+.btn-colheita {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 15px;
+    width: 100%;
+}
+
+/* Insumos (Cinza) */
+.insumos-actions {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px;
+    gap: 10px;
+}
+.btn-gray {
+    background-color: #e0e0e0;
+    color: #333;
+    border: none;
+    border-radius: 20px;
+    padding: 8px;
+    flex: 1;
+    font-size: 12px;
+    cursor: pointer;
+}
+.insumos-card {
+    background-color: #e0e0e0; 
+    padding-top: 20px;
+    border-radius: 15px 15px 0 0; 
+    margin-bottom: 0;
+}
+.insumos-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+.tab-pill {
+    background-color: white;
+    border-radius: 20px;
+    display: flex;
+    overflow: hidden;
+}
+.tab {
+    background: none;
+    border: none;
+    padding: 5px 20px;
+    font-size: 13px;
+    cursor: pointer;
+}
+.tab.active { font-weight: bold; color: #333; }
+.tab.inactive { color: #888; }
+
+/* Busca e Paginação de Insumos */
+.insumos-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 0 10px;
+}
+.search-bar {
+    border: none;
+    border-radius: 15px;
+    padding: 5px 10px;
+    font-size: 12px;
+    width: 60%;
+}
+
+#filtro-plantacao {
+    background-color: #f4f4f4;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    color: #333;
+    padding: 8px;
+    font-weight: bold;
+}
+
+#filtro-plantacao:focus {
+    border-color: #464646; 
+    outline: none;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+}
+.pagination button {
+    background: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+/* Tabela de Insumos */
+.insumos-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+.insumos-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    text-align: center;
+}
+.insumos-table th {
+    font-weight: normal;
+    color: #555;
+    padding-bottom: 10px;
+}
+.insumos-table td {
+    padding: 10px 5px;
+    border-top: 1px solid #ccc; 
+}
+
+/* Modais e Estados Vazios */
+.empty-msg {
+    font-size: 12px;
+    color: #666;
+    font-style: italic;
+}
+.empty-state {
+    text-align: center;
+    padding: 15px;
+    margin: 10px 15px;
+    color: #666;
+    font-size: 13px;
+    border: 1px dashed #bcaaa4;
+    border-radius: 10px;
+}
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(255, 255, 255, 0.7); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    border-radius: 15px;
+    padding: 20px;
+    width: 85%;
+    max-width: 350px;
+    text-align: center;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.modal-content h3 { font-size: 16px; margin-bottom: 10px; }
+.modal-content label { font-size: 12px; text-align: left; margin-bottom: -5px; margin-top: 5px; }
+.modal-content input, .modal-content select {
+    border-radius: 20px;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    text-align: center;
+}
+.btn-confirm {
+    background-color: white;
+    color: #333;
+    border: none;
+    border-radius: 20px;
+    padding: 10px;
+    margin-top: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.btn-back {
+    background-color: white;
+    color: #333;
+    border: none;
+    border-radius: 20px;
+    padding: 10px;
+    cursor: pointer;
+}
+.finance-modal { background-color: #aaffaa; }
+.plant-modal { background-color: #bcaaa4; }
+.insumo-modal { background-color: #9e9e9e; color: white; }
+
+/* Cor de fundo do Modal de Perfil (Cinza) */
+.profile-modal { 
+    background-color: #e0e0e0; 
+}
+
+/* Estilização para mostrar que o campo não pode ser editado (E-mail, CPF, Senha) */
+.input-readonly { 
+    background-color: #c0c0c0 !important; 
+    color: #666 !important; 
+    cursor: not-allowed; 
+    outline: none; 
+}

@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroGestor</title>
+    <link rel="stylesheet" href="/styles/style.css">
+</head>
+<body>
+    <!-- TELAS DE AUTENTICAÇÃO -->
+    <div id="auth-container">
+        <h1 style="color: #006400; margin-bottom: 20px;">AgroGestor</h1>
+        
+        <!-- Tela de Login -->
+        <div id="login-screen" class="auth-box">
+            <input type="email" id="login-email" placeholder="Insira seu e-mail...">
+            <input type="password" id="login-senha" placeholder="Insira sua senha...">
+            <button class="btn-auth" id="btn-fazer-login">Confirmar</button>
+            <p class="auth-link" id="link-esqueci-senha" style="margin-top: -5px;">Esqueci minha senha</p>
+            <p class="auth-link" id="link-ir-cadastro" style="margin-top: 10px;">Cadastrar nova conta</p>
+        </div>
+
+        <!-- Tela de Cadastro -->
+        <div id="register-screen" class="auth-box" style="display: none;">
+            <input type="text" id="cad-nome" placeholder="Nome completo:">
+            <input type="email" id="cad-email" placeholder="E-mail:">
+            <input type="text" id="cad-cpf" placeholder="CPF (apenas números):" maxlength="11">
+            <input type="password" id="cad-senha" placeholder="Senha:">
+            <input type="password" id="cad-conf-senha" placeholder="Confirmar senha:">
+            <select id="cad-estado">
+                <option value="">Estado:</option>
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espírito Santo</option>
+                <option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondônia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+            </select>
+            <button class="btn-auth" id="btn-fazer-cadastro">Confirmar</button>
+            <p class="auth-link" id="link-ir-login">Já possui uma conta? Entre aqui!</p>
+        </div>
+
+        <!-- Tela Esqueci a Senha -->
+        <div id="forgot-password-screen" class="auth-box" style="display: none;">
+            <h3>Recuperar Senha</h3>
+            <p style="font-size: 12px; color: #555;">Enviaremos um link de recuperação para o seu e-mail.</p>
+            <input type="email" id="recupera-email" placeholder="Digite seu e-mail cadastrado">
+            <input type="text" id="recupera-cpf" placeholder="Confirme seu CPF (apenas números)" maxlength="11">
+            <button class="btn-auth" id="btn-enviar-recuperacao">Enviar E-mail</button>
+            <p class="auth-link" id="link-voltar-login">Voltar ao Login</p>
+        </div>
+        
+        <!-- Tela de Redefinir Senha -->
+        <div id="reset-password-screen" class="auth-box" style="display: none;">
+            <h3>Criar Nova Senha</h3>
+            <p style="font-size: 12px; color: #555;">Digite sua nova senha abaixo.</p>
+            <input type="password" id="reset-senha" placeholder="Nova senha">
+            <input type="password" id="reset-conf-senha" placeholder="Confirme a nova senha">
+            <button class="btn-auth" id="btn-salvar-nova-senha">Salvar Nova Senha</button>
+            <p class="auth-link" id="link-voltar-login-reset" style="margin-top: 10px;">Voltar ao Login</p>
+        </div>
+    </div>
+
+    <!-- SISTEMA PRINCIPAL -->
+    <div id="app-container" style="display: none;">
+        <header class="top-bar">
+            <h1>AgroGestor</h1>
+            <button class="menu-btn" id="btn-abrir-perfil">👤</button>
+        </header>
+
+        <!-- Previsão do Tempo -->
+        <section class="card weather-card">
+            <h2>Previsão do tempo local</h2>
+            <div class="weather-info" id="weather-info">
+                <span class="empty-msg">Buscando clima na sua localização...</span>
+            </div>
+            
+            <div class="forecast-24h" id="forecast-container"></div>
+            <div class="legenda-clima">
+                <p><strong>Legenda do Clima:</strong></p>
+                <ul>
+                    <li><span>☀️/🌙</span> Limpo</li>
+                    <li><span>⛅</span> Parcialmente nublado</li>
+                    <li><span>☁️</span> Nublado</li>
+                    <li><span>🌫️</span> Neblina</li>
+                    <li><span>🌦️</span> Garoa/Pancadas</li>
+                    <li><span>🌧️</span> Chuva Contínua</li>
+                    <li><span>⛈️</span> Tempestade</li>
+                    <li><span>❄️</span> Neve</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Finanças -->
+        <section class="card finance-card">
+            <h2>Finanças</h2>
+            <div class="finance-grid">
+                <div class="finance-item">
+                    <p>Valor recebido</p>
+                    <strong id="val-recebido">R$ 0,00</strong>
+                    <button class="btn-light" id="btn-add-receita">Adicionar valor</button>
+                </div>
+                <div class="finance-item">
+                    <p>Valor gasto</p>
+                    <strong id="val-gasto">R$ 0,00</strong>
+                    <button class="btn-light" id="btn-add-gasto">Adicionar valor</button>
+                </div>
+                <div class="finance-item balance">
+                    <p>Balanço</p>
+                    <span id="status-balanco">Neutro</span>
+                    <strong id="val-balanco">R$ 0,00</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- Plantações -->
+        <button class="btn-brown-wide" id="btn-add-plantacao">Inserir plantação</button>
+        <div id="empty-plantation-msg" class="empty-state">
+            <p>Nenhuma plantação cadastrada.</p>
+        </div>
+        <div id="plantations-container"></div>
+
+        <!-- Insumos -->
+        <div class="insumos-actions">
+            <button class="btn-gray" id="btn-abrir-estoque">Inserir insumo</button>
+            <button class="btn-gray" id="btn-abrir-uso">Usar insumo</button>
+        </div>
+
+        <section class="card insumos-card">
+            <h2>Insumos</h2>
+            <div class="insumos-tabs">
+                <div class="tab-pill">
+                    <button class="tab active" id="tab-estoque">Estoque</button>
+                    <button class="tab inactive" id="tab-em-uso">Em uso</button>
+                </div>
+            </div>
+
+            <div class="insumos-controls">
+                <input type="text" id="search-insumo" placeholder="Buscar insumo..." class="search-bar">
+                <select id="filtro-plantacao" class="input-field" style="max-width: 200px; margin-left: 10px;">
+                    <option value="">Todas as plantações</option>
+                </select>
+                <div class="pagination">
+                    <button id="btn-prev-page">◄</button>
+                    <span id="page-info">Pág 1</span>
+                    <button id="btn-next-page">►</button>
+                </div>
+            </div>
+
+            <div class="insumos-table-container">
+                <table class="insumos-table" id="tabela-estoque-view">
+                    <thead><tr><th>Tipo</th><th>Qtd</th><th>Registro</th><th>Validade</th><th>Ações</th></tr></thead>
+                    <tbody id="tabela-estoque-body">
+                        <tr><td colspan="5" class="empty-msg">Nenhum insumo em estoque.</td></tr>
+                    </tbody>
+                </table>
+                <table class="insumos-table" id="tabela-em-uso-view" style="display: none;">
+                    <thead><tr><th>Tipo</th><th>Qtd</th><th>Local</th><th>Data de uso</th></tr></thead>
+                    <tbody id="tabela-em-uso-body">
+                        <tr><td colspan="4" class="empty-msg">Nenhum insumo em uso.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- MODAIS -->
+    <div id="modal-overlay" class="modal-overlay" style="display: none;">
+        
+        <!-- Modal Perfil -->
+        <div id="modal-perfil" class="modal-content profile-modal" style="display: none;">
+            <h3 style="color: #006400;">Meu Perfil</h3>
+            <label>Nome:</label>
+            <input type="text" id="perfil-nome">
+            <label>E-mail (Não editável):</label>
+            <input type="email" id="perfil-email" class="input-readonly" readonly>
+            <label>Senha:</label>
+            <input type="password" value="********" class="input-readonly" readonly>
+            <label>Estado:</label>
+            <select id="perfil-estado">
+                <option value="AC">Acre</option>
+                <option value="AL">Alagoas</option>
+                <option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option>
+                <option value="BA">Bahia</option>
+                <option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option>
+                <option value="ES">Espírito Santo</option>
+                <option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option>
+                <option value="MT">Mato Grosso</option>
+                <option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option>
+                <option value="PA">Pará</option>
+                <option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option>
+                <option value="PE">Pernambuco</option>
+                <option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option>
+                <option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option>
+                <option value="RO">Rondônia</option>
+                <option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option>
+                <option value="SP">São Paulo</option>
+                <option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+            </select>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn-confirm" id="btn-salvar-perfil" style="flex: 1;">Salvar</button>
+                <button class="btn-back" style="flex: 1; background-color: #ffcccc; color: #cc0000;" id="btn-logout">Sair da Conta</button>
+            </div>
+            <button class="btn-back" style="margin-top: 5px;">Voltar</button>
+        </div>
+
+        <!-- Modal Receita e Gasto -->
+        <div id="modal-receita" class="modal-content finance-modal" style="display: none;">
+            <h3>Digite o valor recebido:</h3>
+            <input type="number" id="input-receita" placeholder="R$ 0,00" min="0.01" step="0.01" oninput="limitDecimals(this)">
+            <button class="btn-confirm" id="btn-confirm-receita">Confirmar</button>
+            <button class="btn-back">Voltar</button>
+        </div>
+
+        <div id="modal-gasto" class="modal-content finance-modal" style="display: none;">
+            <h3>Digite o valor gasto:</h3>
+            <input type="number" id="input-gasto" placeholder="R$ 0,00" min="0.01" step="0.01" oninput="limitDecimals(this)">
+            <button class="btn-confirm" id="btn-confirm-gasto">Confirmar</button>
+            <button class="btn-back">Voltar</button>
+        </div>
+
+        <!-- Modal Plantação -->
+        <div id="modal-plantacao" class="modal-content plant-modal" style="display: none;">
+            <h3>Inserir plantação</h3>
+            <label>Nome:</label>
+            <input type="text" id="input-plant-nome" placeholder="Ex: Plantação A">
+            <label>Área plantada (u.m.):</label>
+            <input type="number" id="input-plant-area" placeholder="Ex: 10" min="0.01" step="0.01">
+            <label>Data de plantio:</label>
+            <input type="date" id="input-plant-data">
+            <label>Previsão de colheita:</label>
+            <input type="date" id="input-plant-colheita">
+            <button class="btn-confirm" id="btn-confirm-plantacao">Confirmar</button>
+            <button class="btn-back">Voltar</button>
+        </div>
+
+        <!-- Modal Insumo (Estoque) -->
+        <div id="modal-insumo-estoque" class="modal-content insumo-modal" style="display: none;">
+            <h3>Inserir no estoque</h3>
+            <label>Nome:</label>
+            <input type="text" id="input-insumo-nome" placeholder="Ex: Adubo">
+            <label>Quantidade e Medida:</label>
+            <div style="display: flex; gap: 5px;">
+                <input type="number" id="input-insumo-qtd" style="flex: 2;" min="0.01" step="0.01" oninput="limitDecimals(this)">
+                <select id="input-insumo-unidade" style="flex: 1; border-radius: 20px; border: none; padding: 5px;">
+                    <option value="Kg">Kg</option>
+                    <option value="L">L</option>
+                </select>
+            </div>
+            <label>Data de validade:</label>
+            <input type="date" id="input-insumo-validade">
+            <label>Número de registro:</label>
+            <input type="number" id="input-insumo-registro" min="1" step="1">
+            <button class="btn-confirm" id="btn-confirm-estoque">Confirmar</button>
+            <button class="btn-back">Voltar</button>
+        </div>
+
+        <!-- Modal Insumo (Uso) -->
+        <div id="modal-insumo-uso" class="modal-content insumo-modal" style="display: none;">
+            <h3>Usar do estoque</h3>
+            
+            <label>Buscar Insumo (Nome ou Registro):</label>
+            <div style="display: flex; gap: 5px;">
+                <input type="text" id="input-uso-busca" placeholder="Ex: Adubo ou 1234" style="flex: 2;">
+                <button class="btn-gray" id="btn-buscar-lotes" style="flex: 1; background-color: #4CAF50; color: white; font-weight: bold;">Buscar</button>
+            </div>
+            
+            <!-- LOTES E QUANTIDADES -->
+            <div id="container-lotes-uso" style="margin-top: 10px; max-height: 200px; overflow-y: auto; text-align: left; background-color: rgba(0,0,0,0.1); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px;">
+                <p class="empty-msg" style="text-align: center; color: white; margin-top: 10px;">Digite o nome ou registro e clique em buscar.</p>
+            </div>
+
+            <label>Local de uso:</label>
+            <select id="input-uso-local" style="border-radius: 20px; border: none; padding: 8px 15px;">
+                <option value="">Selecione a plantação</option>
+            </select>
+            <label>Data de uso:</label>
+            <input type="date" id="input-uso-data">
+            <button class="btn-confirm" id="btn-confirm-uso">Confirmar Uso</button>
+            <button class="btn-back">Voltar</button>
+        </div>
+    </div>
+
+    <script src="/scripts/script.js"></script>
+</body>
+</html>
