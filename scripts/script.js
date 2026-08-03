@@ -8,6 +8,49 @@ window.limitDecimals = function(e) {
     }
 };
 
+function escapeHTML(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (char) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+    }[char]));
+}
+
+function normalizarTexto(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+}
+
+function validarEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(email || '').trim());
+}
+
+function validarSenhaForte(senha) {
+    return String(senha || '').length >= 8 && /[A-Za-z]/.test(senha) && /\d/.test(senha);
+}
+
+function limparCPF(cpf) {
+    return String(cpf || '').replace(/\D/g, '').slice(0, 11);
+}
+
+function aplicarMascaraCPF(input) {
+    const digits = limparCPF(input.value);
+    input.value = digits
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d)/, '$1.$2')
+        .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+}
+
+async function fetchJSON(url, options = {}) {
+    const resposta = await fetch(url, options);
+    const resultado = await resposta.json().catch(() => ({ sucesso: false, mensagem: 'Resposta invalida do servidor.' }));
+    if (!resposta.ok) {
+        throw new Error(resultado.mensagem || 'Erro na operacao.');
+    }
+    return resultado;
+}
+
 function formatDate(dateStr) {
     if(!dateStr) return '--/--/----';
     return dateStr.split('-').reverse().join('/');
@@ -49,33 +92,39 @@ document.getElementById('link-esqueci-senha').addEventListener('click', () => { 
 document.getElementById('link-voltar-login').addEventListener('click', () => { document.getElementById('forgot-password-screen').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex'; });
 document.getElementById('link-voltar-login-reset')?.addEventListener('click', () => { document.getElementById('reset-password-screen').style.display = 'none'; document.getElementById('login-screen').style.display = 'flex'; });
 
+['cad-cpf', 'recupera-cpf'].forEach(id => {
+    document.getElementById(id)?.addEventListener('input', (event) => aplicarMascaraCPF(event.target));
+});
+
 document.getElementById('btn-fazer-cadastro').addEventListener('click', async () => {
-    const nome = document.getElementById('cad-nome').value;
-    const email = document.getElementById('cad-email').value;
-    const cpf = document.getElementById('cad-cpf').value;
+    const nome = normalizarTexto(document.getElementById('cad-nome').value);
+    const email = normalizarTexto(document.getElementById('cad-email').value).toLowerCase();
+    const cpf = limparCPF(document.getElementById('cad-cpf').value);
     const senha = document.getElementById('cad-senha').value;
     const confSenha = document.getElementById('cad-conf-senha').value;
     const estado = document.getElementById('cad-estado').value;
 
     if (!nome || !email || !cpf || !senha || !estado) { alert("Preencha todos os campos!"); return; }
-    if (!validarCPF(cpf)) { alert("CPF Inválido! Verifique a numeração."); return; }
+    if (nome.length < 3) { alert("Informe o nome completo."); return; }
+    if (!validarEmail(email)) { alert("Informe um e-mail valido."); return; }
+    if (!validarCPF(cpf)) { alert("CPF invalido! Verifique a numeracao."); return; }
+    if (!validarSenhaForte(senha)) { alert("A senha deve ter pelo menos 8 caracteres, com letras e numeros."); return; }
     if (senha !== confSenha) { alert("As senhas não coincidem!"); return; }
 
     const dados = { nome, email, cpf, senha, estado };
     try {
-        const resposta = await fetch('/api/cadastro', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) });
-        const resultado = await resposta.json();
+        const resultado = await fetchJSON('/api/cadastro', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) });
         alert(resultado.mensagem);
         if(resultado.sucesso) document.getElementById('link-ir-login').click();
-    } catch(e) { alert("Erro de conexão. Servidor online?"); }
+    } catch(e) { alert(e.message || "Erro de conexao. Servidor online?"); }
 });
 
 document.getElementById('btn-fazer-login').addEventListener('click', async () => {
-    const email = document.getElementById('login-email').value;
+    const email = normalizarTexto(document.getElementById('login-email').value).toLowerCase();
     const senha = document.getElementById('login-senha').value;
+    if (!validarEmail(email) || !senha) { alert("Informe e-mail e senha validos."); return; }
     try {
-        const resposta = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, senha }) });
-        const resultado = await resposta.json();
+        const resultado = await fetchJSON('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, senha }) });
 
         if (resultado.sucesso) {
             usuarioLogado = resultado.usuario; 
@@ -89,12 +138,12 @@ document.getElementById('btn-fazer-login').addEventListener('click', async () =>
             try { await carregarPlantacoesDoBanco(); } catch(e) { console.error("Erro Plantações", e); }
             
         } else { alert(resultado.mensagem); }
-    } catch(e) { alert("Erro de conexão com servidor. Reinicie o Python."); }
+    } catch(e) { alert(e.message || "Erro de conexao com servidor. Reinicie o Python."); }
 });
 
 document.getElementById('btn-enviar-recuperacao').addEventListener('click', async () => {
-    const email = document.getElementById('recupera-email').value;
-    const cpf = document.getElementById('recupera-cpf').value;
+    const email = normalizarTexto(document.getElementById('recupera-email').value).toLowerCase();
+    const cpf = limparCPF(document.getElementById('recupera-cpf').value);
     
     if(!email || !cpf) { alert("Digite o e-mail e confirme seu CPF."); return; }
     if(!validarCPF(cpf)) { alert("CPF Inválido! Verifique a numeração."); return; }
@@ -104,12 +153,11 @@ document.getElementById('btn-enviar-recuperacao').addEventListener('click', asyn
     btn.disabled = true;
 
     try {
-        const resposta = await fetch('/api/recuperar_senha', {
+        const resultado = await fetchJSON('/api/recuperar_senha', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email, cpf: cpf })
         });
-        const resultado = await resposta.json();
         
         alert(resultado.mensagem);
         if(resultado.sucesso) {
@@ -117,7 +165,7 @@ document.getElementById('btn-enviar-recuperacao').addEventListener('click', asyn
             document.getElementById('recupera-email').value = ''; 
             document.getElementById('recupera-cpf').value = ''; 
         }
-    } catch(e) { alert("Erro ao conectar com o servidor."); }
+    } catch(e) { alert(e.message || "Erro ao conectar com o servidor."); }
     
     btn.textContent = "Enviar E-mail";
     btn.disabled = false;
@@ -127,22 +175,22 @@ document.getElementById('btn-salvar-nova-senha')?.addEventListener('click', asyn
     const senha = document.getElementById('reset-senha').value;
     const confSenha = document.getElementById('reset-conf-senha').value;
 
-    if (!senha || senha !== confSenha) { alert("As senhas não coincidem ou estão vazias!"); return; }
+    if (!validarSenhaForte(senha)) { alert("A senha deve ter pelo menos 8 caracteres, com letras e numeros."); return; }
+    if (senha !== confSenha) { alert("As senhas nao coincidem."); return; }
 
     try {
-        const resposta = await fetch('/api/nova_senha', {
+        const resultado = await fetchJSON('/api/nova_senha', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token: tokenRecuperacao, senha: senha })
         });
-        const resultado = await resposta.json();
         alert(resultado.mensagem);
 
         if (resultado.sucesso) {
             document.getElementById('reset-password-screen').style.display = 'none';
             document.getElementById('login-screen').style.display = 'flex';
         }
-    } catch(e) { alert("Erro ao conectar com o servidor."); }
+    } catch(e) { alert(e.message || "Erro ao conectar com o servidor."); }
 });
 
 document.getElementById('btn-abrir-perfil').addEventListener('click', () => {
@@ -177,7 +225,8 @@ document.getElementById('btn-salvar-perfil').addEventListener('click', async () 
     } catch(e) { alert("Erro de comunicação com o servidor."); }
 });
 
-document.getElementById('btn-logout').addEventListener('click', () => {
+document.getElementById('btn-logout').addEventListener('click', async () => {
+    try { await fetch('/api/logout', { method: 'POST' }); } catch(e) {}
     usuarioLogado = null; plantacoes = []; estoque = []; emUso = [];
     totalRecebido = 0; totalGasto = 0;
     updateFinanceUI(); 
@@ -308,11 +357,16 @@ async function registrarFinanca(tipo, valorInputId) {
     if (!isNaN(input) && input > 0) {
         input = Math.round(input * 100) / 100;
         
-        await fetch('/api/financas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tipo: tipo, valor: input, id_usuario: usuarioLogado.id })
-        });
+        try {
+            await fetchJSON('/api/financas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ tipo: tipo, valor: input, id_usuario: usuarioLogado.id })
+            });
+        } catch(e) {
+            alert(e.message);
+            return;
+        }
         
         if(tipo === 'receita') totalRecebido += input;
         else totalGasto += input;
@@ -342,13 +396,13 @@ async function carregarPlantacoesDoBanco() {
     const filtroSelect = document.getElementById('filtro-plantacao');
     if (filtroSelect) {
         filtroSelect.innerHTML = '<option value="">Todas as plantações</option>';
-        plantacoes.forEach(p => filtroSelect.innerHTML += `<option value="${p.id}">${p.nome}</option>`);
+        plantacoes.forEach(p => filtroSelect.innerHTML += `<option value="${p.id}">${escapeHTML(p.nome)}</option>`);
     }
 }
 
 document.getElementById('btn-add-plantacao').addEventListener('click', () => openModal('modal-plantacao'));
 document.getElementById('btn-confirm-plantacao').addEventListener('click', async () => {
-    const nome = document.getElementById('input-plant-nome').value;
+    const nome = normalizarTexto(document.getElementById('input-plant-nome').value);
     const area = parseFloat(document.getElementById('input-plant-area').value);
     const plantio = document.getElementById('input-plant-data').value;
     const colheita = document.getElementById('input-plant-colheita').value;
@@ -360,8 +414,7 @@ document.getElementById('btn-confirm-plantacao').addEventListener('click', async
     
     const dados = { nome, area, plantio, colheita, id_usuario: usuarioLogado.id };
 
-    const res = await fetch('/api/plantacao', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) });
-    const result = await res.json();
+    const result = await fetchJSON('/api/plantacao', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) }).catch(e => ({ sucesso: false, mensagem: e.message }));
 
     if(result.sucesso) {
         plantacoes.push({ id: result.id, nome, area, data_plantio: plantio, data_colheita: colheita });
@@ -369,11 +422,13 @@ document.getElementById('btn-confirm-plantacao').addEventListener('click', async
         
         const filtroSelect = document.getElementById('filtro-plantacao');
         if (filtroSelect) {
-            filtroSelect.innerHTML += `<option value="${result.id}">${nome}</option>`;
+            filtroSelect.innerHTML += `<option value="${result.id}">${escapeHTML(nome)}</option>`;
         }
 
         document.getElementById('input-plant-nome').value = ''; document.getElementById('input-plant-area').value = '';
         closeModal();
+    } else if (result.mensagem) {
+        alert(result.mensagem);
     }
 });
 
@@ -395,16 +450,18 @@ function renderPlantacoes() {
                 statusTexto = temInsumo ? "Com insumo" : "Sem insumo";
             }
 
+            const nomeSeguro = escapeHTML(p.nome);
+            const nomeParaAcao = String(p.nome || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
             container.innerHTML += `
             <section class="card plantation-card" id="plant_${p.id}">
-                <h2>${p.nome}</h2>
+                <h2>${nomeSeguro}</h2>
                 <div class="plantation-grid">
                     <div><p>Área</p><strong>${p.area} u.m.</strong></div>
                     <div><p>Plantio</p><strong>${formatDate(p.data_plantio)}</strong></div>
                     <div><p>Colheita</p><strong>${formatDate(p.data_colheita)}</strong></div>
                     <div><p>Status</p><strong style="${statusTexto === 'Pronta para colheita' ? 'color: #006400;' : ''}">${statusTexto}</strong></div>
                 </div>
-                <button class="btn-colheita" onclick="confirmarColheita(${p.id}, '${p.nome}')">Colheita feita</button>
+                <button class="btn-colheita" onclick="confirmarColheita(${p.id}, '${nomeParaAcao}')">Colheita feita</button>
             </section>`;
         });
     }
@@ -412,7 +469,7 @@ function renderPlantacoes() {
 
 window.confirmarColheita = async function(idPlantacao, nomePlantacao) {
     if(confirm(`A colheita da ${nomePlantacao} já foi feita? Ela será removida.`)) {
-        await fetch(`/api/plantacao/${idPlantacao}`, { method: 'DELETE' });
+        await fetchJSON(`/api/plantacao/${idPlantacao}`, { method: 'DELETE' });
         await carregarPlantacoesDoBanco();
         await carregarInsumosDoBanco();
     }
@@ -485,12 +542,12 @@ function renderTabelasInsumos() {
 
             bodyEstoque.innerHTML += `
             <tr style="${linhaCor}">
-                <td>${item.nome}</td>
-                <td>${item.quantidade}${item.unidade}</td>
-                <td>${item.registro}</td>
-                <td>${item.validade}</td>
+                <td>${escapeHTML(item.nome)}</td>
+                <td>${escapeHTML(item.quantidade)}${escapeHTML(item.unidade)}</td>
+                <td>${escapeHTML(item.registro)}</td>
+                <td>${escapeHTML(item.validade)}</td>
                 <td>
-                    <button onclick="deletarInsumoEstoque(${item.id})" style="background: none; border: none; cursor: pointer; color: #d32f2f; font-weight: bold;">Excluir</button>
+                    <button onclick="deletarInsumoEstoque(${item.id})" class="btn-table-delete">Excluir</button>
                 </td>
             </tr>`; 
         });
@@ -511,7 +568,7 @@ function renderTabelasInsumos() {
     if (emUsoFiltrado.length === 0) bodyEmUso.innerHTML = `<tr><td colspan="4" class="empty-msg">Nenhum insumo em uso encontrado.</td></tr>`;
     else {
         bodyEmUso.innerHTML = '';
-        emUsoFiltrado.forEach(item => { bodyEmUso.innerHTML += `<tr><td>${item.nome}</td><td>${item.quantidade_usada}${item.unidade}</td><td>${item.local_nome}</td><td>${item.data_uso}</td></tr>`; });
+        emUsoFiltrado.forEach(item => { bodyEmUso.innerHTML += `<tr><td>${escapeHTML(item.nome)}</td><td>${escapeHTML(item.quantidade_usada)}${escapeHTML(item.unidade)}</td><td>${escapeHTML(item.local_nome)}</td><td>${escapeHTML(item.data_uso)}</td></tr>`; });
     }
 }
 
@@ -537,7 +594,7 @@ document.getElementById('btn-next-page').addEventListener('click', () => {
 window.deletarInsumoEstoque = async function(idInsumo) {
     if (confirm("Tem certeza que deseja apagar este insumo do estoque? Esta ação não pode ser desfeita.")) {
         try {
-            await fetch(`/api/insumo_estoque/${idInsumo}`, { method: 'DELETE' });
+            await fetchJSON(`/api/insumo_estoque/${idInsumo}`, { method: 'DELETE' });
             await carregarInsumosDoBanco();
         } catch(e) {
             alert("Erro ao excluir insumo.");
@@ -547,7 +604,7 @@ window.deletarInsumoEstoque = async function(idInsumo) {
 
 document.getElementById('btn-abrir-estoque').addEventListener('click', () => openModal('modal-insumo-estoque'));
 document.getElementById('btn-confirm-estoque').addEventListener('click', async () => {
-    const nome = document.getElementById('input-insumo-nome').value;
+    const nome = normalizarTexto(document.getElementById('input-insumo-nome').value);
     let qtd = parseFloat(document.getElementById('input-insumo-qtd').value);
     const unidade = document.getElementById('input-insumo-unidade').value;
     const registro = parseInt(document.getElementById('input-insumo-registro').value);
@@ -562,7 +619,12 @@ document.getElementById('btn-confirm-estoque').addEventListener('click', async (
 
     const dados = { nome, qtd, unidade, registro, validade: validadeFormatada, validadeRaw, id_usuario: usuarioLogado.id };
     
-    await fetch('/api/insumo_estoque', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) });
+    try {
+        await fetchJSON('/api/insumo_estoque', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) });
+    } catch(e) {
+        alert(e.message);
+        return;
+    }
     
     await carregarInsumosDoBanco();
     
@@ -577,7 +639,7 @@ document.getElementById('btn-abrir-uso').addEventListener('click', () => {
     document.getElementById('container-lotes-uso').innerHTML = '<p class="empty-msg" style="text-align: center; color: white; margin-top: 10px;">Digite o nome ou registro e clique em buscar.</p>';
     const selectLocal = document.getElementById('input-uso-local');
     selectLocal.innerHTML = '<option value="">Selecione a plantação</option>';
-    plantacoes.forEach(p => selectLocal.innerHTML += `<option value="${p.id}">${p.nome}</option>`);
+    plantacoes.forEach(p => selectLocal.innerHTML += `<option value="${p.id}">${escapeHTML(p.nome)}</option>`);
     openModal('modal-insumo-uso');
 });
 
@@ -586,8 +648,13 @@ document.getElementById('btn-buscar-lotes').addEventListener('click', async () =
     const termo = document.getElementById('input-uso-busca').value;
     if (!termo) { alert("Digite o nome ou registro para buscar."); return; }
     
-    const res = await fetch(`/api/insumo_estoque/busca/${usuarioLogado.id}?q=${encodeURIComponent(termo)}`);
-    const lotes = await res.json();
+    let lotes = [];
+    try {
+        lotes = await fetchJSON(`/api/insumo_estoque/busca/${usuarioLogado.id}?q=${encodeURIComponent(termo)}`);
+    } catch(e) {
+        alert(e.message);
+        return;
+    }
     
     const container = document.getElementById('container-lotes-uso');
     container.innerHTML = '';
@@ -608,14 +675,14 @@ document.getElementById('btn-buscar-lotes').addEventListener('click', async () =
         container.innerHTML += `
             <div style="padding: 10px; border-radius: 8px; ${bgColor} font-size: 12px; display: flex; flex-direction: column; gap: 5px;">
                 <div>
-                    <strong>${lote.nome}</strong> ${titleVencido}<br>
-                    Registro: ${lote.registro} | Validade: ${lote.validade}<br>
+                    <strong>${escapeHTML(lote.nome)}</strong> ${titleVencido}<br>
+                    Registro: ${escapeHTML(lote.registro)} | Validade: ${escapeHTML(lote.validade)}<br>
                     Estoque disponível: <strong>${lote.quantidade} ${lote.unidade}</strong>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <label style="margin: 0; color: inherit;">Usar:</label>
                     <input type="number" class="input-lote-qtd" data-id="${lote.id}" data-max="${lote.quantidade}" data-vencido="${isVencido}" min="0" step="0.01" style="width: 80px; padding: 5px; border-radius: 5px; border: 1px solid #ccc; background: white; color: black;" placeholder="0">
-                    <span>${lote.unidade}</span>
+                    <span>${escapeHTML(lote.unidade)}</span>
                 </div>
             </div>
         `;
@@ -666,8 +733,7 @@ document.getElementById('btn-confirm-uso').addEventListener('click', async () =>
 
     const dados = { lotes: lotesParaUsar, local_nome: localNome, id_plantacao: idPlantacao, dataUso: dataUso, id_usuario: usuarioLogado.id };
     
-    const res = await fetch('/api/insumo_uso', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) });
-    const result = await res.json();
+    const result = await fetchJSON('/api/insumo_uso', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dados) }).catch(e => ({ sucesso: false, mensagem: e.message }));
     
     if (result.sucesso) {
         await carregarInsumosDoBanco();

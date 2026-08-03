@@ -13,8 +13,8 @@
         
         <!-- Tela de Login -->
         <div id="login-screen" class="auth-box">
-            <input type="email" id="login-email" placeholder="Insira seu e-mail...">
-            <input type="password" id="login-senha" placeholder="Insira sua senha...">
+            <input type="email" id="login-email" placeholder="E-mail" autocomplete="email" required>
+            <input type="password" id="login-senha" placeholder="Senha" autocomplete="current-password" required>
             <button class="btn-auth" id="btn-fazer-login">Confirmar</button>
             <p class="auth-link" id="link-esqueci-senha" style="margin-top: -5px;">Esqueci minha senha</p>
             <p class="auth-link" id="link-ir-cadastro" style="margin-top: 10px;">Cadastrar nova conta</p>
@@ -22,12 +22,12 @@
 
         <!-- Tela de Cadastro -->
         <div id="register-screen" class="auth-box" style="display: none;">
-            <input type="text" id="cad-nome" placeholder="Nome completo:">
-            <input type="email" id="cad-email" placeholder="E-mail:">
-            <input type="text" id="cad-cpf" placeholder="CPF (apenas números):" maxlength="11">
-            <input type="password" id="cad-senha" placeholder="Senha:">
-            <input type="password" id="cad-conf-senha" placeholder="Confirmar senha:">
-            <select id="cad-estado">
+            <input type="text" id="cad-nome" placeholder="Nome completo" autocomplete="name" minlength="3" maxlength="120" required>
+            <input type="email" id="cad-email" placeholder="E-mail" autocomplete="email" maxlength="254" required>
+            <input type="text" id="cad-cpf" placeholder="CPF" inputmode="numeric" autocomplete="off" maxlength="14" required>
+            <input type="password" id="cad-senha" placeholder="Senha com letras e números" autocomplete="new-password" minlength="8" maxlength="128" required>
+            <input type="password" id="cad-conf-senha" placeholder="Confirmar senha" autocomplete="new-password" minlength="8" maxlength="128" required>
+            <select id="cad-estado" required>
                 <option value="">Estado:</option>
                 <option value="AC">Acre</option>
                 <option value="AL">Alagoas</option>
@@ -65,8 +65,8 @@
         <div id="forgot-password-screen" class="auth-box" style="display: none;">
             <h3>Recuperar Senha</h3>
             <p style="font-size: 12px; color: #555;">Enviaremos um link de recuperação para o seu e-mail.</p>
-            <input type="email" id="recupera-email" placeholder="Digite seu e-mail cadastrado">
-            <input type="text" id="recupera-cpf" placeholder="Confirme seu CPF (apenas números)" maxlength="11">
+            <input type="email" id="recupera-email" placeholder="Digite seu e-mail cadastrado" autocomplete="email" required>
+            <input type="text" id="recupera-cpf" placeholder="Confirme seu CPF" inputmode="numeric" maxlength="14" required>
             <button class="btn-auth" id="btn-enviar-recuperacao">Enviar E-mail</button>
             <p class="auth-link" id="link-voltar-login">Voltar ao Login</p>
         </div>
@@ -75,8 +75,8 @@
         <div id="reset-password-screen" class="auth-box" style="display: none;">
             <h3>Criar Nova Senha</h3>
             <p style="font-size: 12px; color: #555;">Digite sua nova senha abaixo.</p>
-            <input type="password" id="reset-senha" placeholder="Nova senha">
-            <input type="password" id="reset-conf-senha" placeholder="Confirme a nova senha">
+            <input type="password" id="reset-senha" placeholder="Nova senha com letras e números" autocomplete="new-password" minlength="8" maxlength="128" required>
+            <input type="password" id="reset-conf-senha" placeholder="Confirme a nova senha" autocomplete="new-password" minlength="8" maxlength="128" required>
             <button class="btn-auth" id="btn-salvar-nova-senha">Salvar Nova Senha</button>
             <p class="auth-link" id="link-voltar-login-reset" style="margin-top: 10px;">Voltar ao Login</p>
         </div>
