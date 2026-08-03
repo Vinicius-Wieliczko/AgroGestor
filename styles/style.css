@@ -140,13 +140,13 @@ input:focus, select:focus {
     position: sticky;
     top: 0;
     z-index: 20;
-    background: #173c2a;
+    background: #2f7d50;
     color: #fff;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 18px clamp(18px, 4vw, 48px);
-    box-shadow: 0 8px 26px rgba(15, 35, 24, 0.2);
+    box-shadow: 0 8px 22px rgba(33, 115, 70, 0.18);
 }
 
 .top-bar h1 {
@@ -158,19 +158,29 @@ input:focus, select:focus {
 }
 
 .menu-btn {
-    width: 48px;
-    height: 48px;
-    border: 1px solid rgba(255, 255, 255, 0.28);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-width: 106px;
+    height: 46px;
+    border: 1px solid rgba(255, 255, 255, 0.42);
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.2);
     color: white;
-    font-size: 0;
+    font-size: 1rem;
+    font-weight: 800;
     cursor: pointer;
+    padding: 0 15px;
 }
 
 .menu-btn::before {
-    content: "👤";
-    font-size: 1.45rem;
+    content: "";
+    width: 20px;
+    height: 20px;
+    border: 2px solid currentColor;
+    border-radius: 999px;
+    box-shadow: inset 0 -7px 0 currentColor;
 }
 
 #app-container {
