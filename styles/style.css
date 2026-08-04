@@ -82,8 +82,9 @@ input:focus, select:focus {
     font-weight: 800;
 }
 
-#auth-container > h1::before {
-    content: "🌱 ";
+.logo-login{
+    height: 120px; 
+    width: auto;
 }
 
 .auth-box {
@@ -153,8 +154,16 @@ input:focus, select:focus {
     font-size: clamp(1.7rem, 4vw, 2.5rem);
 }
 
-.top-bar h1::before {
-    content: "🌱 ";
+.name-top-bar{
+    display: flex; 
+    align-items: center; 
+    gap: 12px;
+}
+
+.logo-principal{
+    height: 50px;
+    width: auto;
+    border-radius: 20%;
 }
 
 .menu-btn {
