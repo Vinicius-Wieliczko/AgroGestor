@@ -41,6 +41,7 @@ A aplicação foi projetada com base nas demandas reais de produtores e técnico
    ```bash
    git clone https://github.com/Vinicius-Wieliczko/AgroGestor.git
    pip install -r requirements.txt
+   cd AgroGestor
    python app.py
 
 Acesse a aplicação no navegador através do endereço: [http://127.0.0.1:5000](http://127.0.0.1:5000)
