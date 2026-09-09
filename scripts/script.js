@@ -468,10 +468,14 @@ function renderPlantacoes() {
 }
 
 window.confirmarColheita = async function(idPlantacao, nomePlantacao) {
-    if(confirm(`A colheita da ${nomePlantacao} já foi feita? Ela será removida.`)) {
-        await fetchJSON(`/api/plantacao/${idPlantacao}`, { method: 'DELETE' });
-        await carregarPlantacoesDoBanco();
-        await carregarInsumosDoBanco();
+    if(confirm(`A colheita da ${nomePlantacao} já foi feita? A plantação e os insumos em uso nela serão removidos.`)) {
+        try {
+            await fetchJSON(`/api/plantacao/${idPlantacao}`, { method: 'DELETE' });
+            await carregarPlantacoesDoBanco();
+            await carregarInsumosDoBanco();
+        } catch (e) {
+            alert(e.message || 'Erro ao apagar a plantação.');
+        }
     }
 };
 

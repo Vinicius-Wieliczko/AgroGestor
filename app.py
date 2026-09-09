@@ -440,10 +440,33 @@ def listar_plantacoes(id_usuario):
 @login_required
 def deletar_plantacao(id_plantacao):
     conn = get_db_connection()
-    conn.execute('DELETE FROM plantacao WHERE id = ? AND id_usuario = ?', (id_plantacao, current_user_id()))
-    conn.commit()
-    conn.close()
-    return jsonify({'sucesso': True})
+    try:
+        usuario_id = current_user_id()
+
+        cursor = conn.execute(
+            'DELETE FROM insumo_uso WHERE id_plantacao = ? AND id_usuario = ?',
+            (id_plantacao, usuario_id),
+        )
+        insumos_removidos = cursor.rowcount
+
+        cursor = conn.execute(
+            'DELETE FROM plantacao WHERE id = ? AND id_usuario = ?',
+            (id_plantacao, usuario_id),
+        )
+        if cursor.rowcount == 0:
+            conn.rollback()
+            return json_error('Plantacao nao encontrada.', 404)
+
+        conn.commit()
+        return jsonify({
+            'sucesso': True,
+            'insumos_removidos': insumos_removidos,
+        })
+    except sqlite3.Error:
+        conn.rollback()
+        return json_error('Nao foi possivel apagar a plantacao.', 500)
+    finally:
+        conn.close()
 
 
 @app.route('/api/financas', methods=['POST'])
