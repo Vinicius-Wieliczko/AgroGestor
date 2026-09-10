@@ -640,7 +640,7 @@ document.getElementById('btn-confirm-estoque').addEventListener('click', async (
 // ABRIR O MODAL DE USO - Limpa as caixas
 document.getElementById('btn-abrir-uso').addEventListener('click', () => {
     document.getElementById('input-uso-busca').value = '';
-    document.getElementById('container-lotes-uso').innerHTML = '<p class="empty-msg" style="text-align: center; color: white; margin-top: 10px;">Digite o nome ou registro e clique em buscar.</p>';
+    document.getElementById('container-lotes-uso').innerHTML = '<p class="empty-msg" style="text-align: center; color: black; margin-top: 10px;">Digite o nome ou registro e clique em buscar.</p>';
     const selectLocal = document.getElementById('input-uso-local');
     selectLocal.innerHTML = '<option value="">Selecione a plantação</option>';
     plantacoes.forEach(p => selectLocal.innerHTML += `<option value="${p.id}">${escapeHTML(p.nome)}</option>`);
@@ -664,7 +664,7 @@ document.getElementById('btn-buscar-lotes').addEventListener('click', async () =
     container.innerHTML = '';
     
     if (lotes.length === 0) {
-        container.innerHTML = '<p class="empty-msg" style="text-align: center; color: white; margin-top: 10px;">Nenhum insumo encontrado.</p>';
+        container.innerHTML = '<p class="empty-msg" style="text-align: center; color: black; margin-top: 10px;">Nenhum insumo encontrado.</p>';
         return;
     }
     
